@@ -34,6 +34,19 @@
 static int framesCounter;
 static int finishScreen;
 
+static Vector2 mousePosition;
+    
+static Vector3 cubePosition = { 0.0f, 0.25f, 0.0f };    
+ // Camera Definitions
+static Camera camera = {  (Vector3){ 0.0f, 10.0f, 10.0f },  (Vector3){ 0.0f, 0.0f, 0.0f }, (Vector3){ 0.0f, 1.0f, 0.0f }, 45.0f };
+
+static float axisX = 0.0f;
+static float axisY = 0.0f;
+    
+static float playerSpeed = 0.1f; 
+
+    
+    
 //----------------------------------------------------------------------------------
 // Gameplay Screen Functions Definition
 //----------------------------------------------------------------------------------
@@ -44,25 +57,25 @@ void InitGameplayScreen(void)
 {
     // TODO: Initialize GAMEPLAY screen variables here!
     framesCounter = 0;
-    finishScreen = 0;
-    Vector2 mousePosition;
-    
-    // Camera Definitions
-    Camera camera;
-    camera.position = (Vector3){ 0.0f, 10.0f, 10.0f };  // Camera position
-    camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };      // Camera looking at point
-    camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };          // Camera up vector (rotation towards target)
-    camera.fovy = 45.0f;                                // Camera field-of-view Y
-
-    Vector3 cubePosition = { 0.0f, 0.0f, 0.0f };
-    
+    finishScreen = 0;  
 }
 
 // Gameplay Screen Update logic
 void UpdateGameplayScreen(void)
 {
     // TODO: Update GAMEPLAY screen variables here!
-    //mousePosition = GetMousePosition();
+    
+    mousePosition = GetMousePosition(); //updates mousePosition
+    
+    GetAxisX();
+    GetAxisY(); 
+
+    //PlayerMovement
+    cubePosition.x += axisX * playerSpeed;
+    cubePosition.z += axisY * playerSpeed;
+    
+    //CameraUpdate
+    camera.target = cubePosition;
     
     // Press enter to change to ENDING screen
     if (IsKeyPressed(KEY_ENTER))
@@ -79,14 +92,15 @@ void DrawGameplayScreen(void)
      ClearBackground(RAYWHITE);
 
         Begin3dMode(camera);
-           DrawCube(cubePosition, 2.0f, 2.0f, 2.0f, RED);
-           DrawCubeWires(cubePosition, 2.0f, 2.0f, 2.0f, MAROON);
+           DrawCube(cubePosition, 1.0f, 1.0f, 1.0f, GREEN);
 
-            DrawGrid(10, 1.0f);
+            DrawGrid(1000, 1.0f);
 
         End3dMode();
         
        DrawRectangle(mousePosition.x,mousePosition.y, 10, 10, BLUE);
+       DrawText( FormatText("axisY: %f", axisY),0,0,40,BLACK);
+       DrawText( FormatText("axisX: %f", axisX),0,45,40,BLACK);
 }
 
 // Gameplay Screen Unload logic
@@ -100,5 +114,37 @@ int FinishGameplayScreen(void)
 {
     return finishScreen;
 }
+void GetAxisY()
+{
+        if(IsKeyDown(KEY_W) )
+    {
+        if (axisY < 1.000f)axisY+= 0.05f;
+    }  
+    else if(IsKeyDown(KEY_S) )
+    {
+        if(axisY > -1.000f)axisY-= 0.05f;
+    }
+    else
+    {
+        if(axisY > 0.000f)axisY-= 0.05f;
+        if(axisY < 0.000f)axisY+= 0.05f;
+    }
 
-float axis;
+}
+void GetAxisX()
+{
+    if(IsKeyDown(KEY_D) )
+    {
+        if (axisX < 1.0f)axisX+= 0.05f;
+    }  
+    else if(IsKeyDown(KEY_A) )
+    {
+        if(axisX > -1.0f)axisX-= 0.05f;
+    }
+    else
+    {
+        if(axisX > 0.0f)axisX  -= 0.05f;
+        if(axisX < 0.0f)axisX += 0.05f;
+    }
+
+}

@@ -75,6 +75,8 @@ void UpdateGameplayScreen(void);
 void DrawGameplayScreen(void);
 void UnloadGameplayScreen(void);
 int FinishGameplayScreen(void);
+void GetAxisY(void);
+void GetAxisX(void);
 
 //----------------------------------------------------------------------------------
 // Ending Screen Functions Declaration
