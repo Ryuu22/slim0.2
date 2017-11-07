@@ -45,7 +45,7 @@ static float axisY = 0.0f;
     
 static float playerSpeed = 0.1f; 
 
-    
+static Vector2 ballPosition = 0;   
     
 //----------------------------------------------------------------------------------
 // Gameplay Screen Functions Definition
@@ -72,10 +72,12 @@ void UpdateGameplayScreen(void)
 
     //PlayerMovement
     cubePosition.x += axisX * playerSpeed;
-    cubePosition.z += axisY * playerSpeed;
+    cubePosition.z += axisY * playerSpeed * -1;
     
     //CameraUpdate
     camera.target = cubePosition;
+    camera.position.x = cubePosition.x ;
+    camera.position.z += axisY * playerSpeed * -1;
     
     // Press enter to change to ENDING screen
     if (IsKeyPressed(KEY_ENTER))
@@ -99,8 +101,8 @@ void DrawGameplayScreen(void)
         End3dMode();
         
        DrawRectangle(mousePosition.x,mousePosition.y, 10, 10, BLUE);
-       DrawText( FormatText("axisY: %f", axisY),0,0,40,BLACK);
-       DrawText( FormatText("axisX: %f", axisX),0,45,40,BLACK);
+       DrawText( FormatText("cameraposition.z: %f", camera.position.z),0,0,40,BLACK);
+
 }
 
 // Gameplay Screen Unload logic
