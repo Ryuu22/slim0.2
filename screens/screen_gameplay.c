@@ -25,10 +25,17 @@
 
 #include "raylib.h"
 #include "screens.h"
+#include "math.h"
+#include "ryuulib.h"
+
+
 
 //----------------------------------------------------------------------------------
 // Global Variables Definition (local to this module)
 //----------------------------------------------------------------------------------
+
+const int screenWidth = 1280;
+const int screenHeight = 720;
 
 // Gameplay screen global variables
 static int framesCounter;
@@ -36,16 +43,18 @@ static int finishScreen;
 
 static Vector2 mousePosition;
     
-static Vector3 cubePosition = { 0.0f, 0.25f, 0.0f };    
+static Player player;    
  // Camera Definitions
 static Camera camera = {  (Vector3){ 0.0f, 10.0f, 10.0f },  (Vector3){ 0.0f, 0.0f, 0.0f }, (Vector3){ 0.0f, 1.0f, 0.0f }, 45.0f };
 
 static float axisX = 0.0f;
 static float axisY = 0.0f;
     
-static float playerSpeed = 0.1f; 
 
-static Vector2 ballPosition = 0;   
+static Vector2 ballPosition = {0.0f,0.0f};   
+static float dx = 0;
+static float dy = 0;
+static float angle = 0;
     
 //----------------------------------------------------------------------------------
 // Gameplay Screen Functions Definition
@@ -58,6 +67,20 @@ void InitGameplayScreen(void)
     // TODO: Initialize GAMEPLAY screen variables here!
     framesCounter = 0;
     finishScreen = 0;  
+    
+    //Player Init
+    player.x = 0.0f;
+    player.y = 0.0f;
+    player.z = 0.0f;
+    
+    player.width = 1.0f;
+    player.height = 1.0f;
+    player.depth = 1.0f;
+    
+    player.life = 100;
+    player.gold = 0;
+    player.score = 0;
+    player.speed = 0.1f;
 }
 
 // Gameplay Screen Update logic
@@ -71,8 +94,18 @@ void UpdateGameplayScreen(void)
     GetAxisY(); 
 
     //PlayerMovement
-    cubePosition.x += axisX * playerSpeed;
-    cubePosition.z += axisY * playerSpeed * -1;
+    cubePosition.x += axisX * player.speed;
+    cubePosition.z += axisY * player.speed * -1;
+    
+    //BallMovement
+    dx = mousePosition.x - screenWidth/2;
+    dy = mousePosition.y - screenHeight/2;
+                    
+    angle = atan2f(dy,dx);
+                
+    ballPosition.x = (player.x + player.width/2) + (range*cosf(angle));
+    ballPosition.z = (player.z + player.height/2) + (range*sinf(angle));    
+    
     
     //CameraUpdate
     camera.target = cubePosition;
