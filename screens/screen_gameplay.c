@@ -34,8 +34,6 @@
 // Global Variables Definition (local to this module)
 //----------------------------------------------------------------------------------
 
-const int screenWidth = 1280;
-const int screenHeight = 720;
 
 // Gameplay screen global variables
 static int framesCounter;
