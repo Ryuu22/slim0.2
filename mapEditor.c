@@ -13,8 +13,10 @@
 
 #include "raylib.h"
 
-#define CAMERA_ZOOM_LIMIT 1.0F
+#define CAMERA_ZOOM_LIMIT 0.0F
 #define CAMERA_ZOOM_MIN 10.0F
+
+typedef enum LayerMode { COLLIDERS, GAMEOBJECTS, DETAILS, UI } GameScreen;
 
 int main()
 {
@@ -22,11 +24,44 @@ int main()
     //--------------------------------------------------------------------------------------
     int screenWidth = 800;
     int screenHeight = 450;
+    
+    //LayerMode editingLayer = COLLIDERS;
 
-    InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
+    InitWindow(screenWidth, screenHeight, "Ryuu Map Editor");
     
     //Map
-    int mapSize = 200;
+    int mapSize = 500;
+    
+    //UI variables
+    
+    int toggleButtonSize = 20;
+    
+    Vector2 mousePosition;
+    
+    //Layer 0 Colliders
+    
+    Rectangle buttonLayerZero = {screenWidth -toggleButtonSize * 4,0,toggleButtonSize,toggleButtonSize};
+    
+    bool LayerZeroToggle = true;
+    
+    Rectangle colliders[9999];
+    int ColliderCounter = 0;
+    
+    bool DrawingNewCollider;
+    Rectangle flashRec;
+    
+    //Layer 1
+    
+        //TODO GameObjects Variables.
+    
+    //Layer 2
+    
+        //TODO Detail Variables
+    
+    //Layer 3
+
+        //TODO UI
+
     
     Camera2D camera;
     
@@ -49,7 +84,14 @@ int main()
         if(IsKeyDown(KEY_W))camera.target.y-= camera.zoom;
         if(IsKeyDown(KEY_S))camera.target.y+= camera.zoom;
         
+        mousePosition = GetMousePosition();
         
+        if(IsMouseButtonPressed(MOUSE_RIGHT_BUTTON ))
+        {
+            // UI buttons
+            if(CheckCollisionPointRec(mousePosition, buttonLayerZero)) LayerZeroToggle = !LayerZeroToggle;
+        }
+        if(IsMouseButtonPressed)
         
         // Camera zoom controls
         camera.zoom += ((float)GetMouseWheelMove()*0.05f);
@@ -76,10 +118,27 @@ int main()
                    DrawLine(i * 10, 0, i*10, mapSize, DARKGRAY);
                    DrawLine(0, i * 10, mapSize, i*10, DARKGRAY);
                }
+
+                
+                //Layer 0 Collider
+                
+                if(LayerZeroToggle)
+                {
+                    for(int i = 0; i >= ColliderCounter;i++)
+                    {
+                        DrawRectangleRec(Colliders[i],RED);
+                    }
+                }
+                
+                //Layer 3 UI
                 
             End2dMode();
             
             DrawText(FormatText("Zoom %i", camera.zoom), 0, 0, 20, RED);
+            DrawText(FormatText("Collider %i", LayerZeroToggle), 0, 30, 20, RED);
+            
+            if(LayerZeroToggle)DrawRectangleRec(buttonLayerZero,MAROON); //ON
+            else DrawRectangleRec(buttonLayerZero,BLACK); //OFF
             
             ClearBackground(RAYWHITE);
 
