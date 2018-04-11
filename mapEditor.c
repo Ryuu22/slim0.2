@@ -47,7 +47,7 @@ int main()
     Rectangle colliders[9999];
     int ColliderCounter = 0;
     
-    bool DrawingNewCollider;
+    bool drawingNewCollider;
     Rectangle flashRec;
     
     //Layer 1
@@ -79,10 +79,10 @@ int main()
         // Update
         //----------------------------------------------------------------------------------
 
-        if(IsKeyDown(KEY_A))camera.target.x-= camera.zoom;
-        if(IsKeyDown(KEY_D))camera.target.x+= camera.zoom;
-        if(IsKeyDown(KEY_W))camera.target.y-= camera.zoom;
-        if(IsKeyDown(KEY_S))camera.target.y+= camera.zoom;
+        if(IsKeyDown(KEY_A))camera.target.x -= 10;
+        if(IsKeyDown(KEY_D))camera.target.x += 10;
+        if(IsKeyDown(KEY_W))camera.target.y -= 10;
+        if(IsKeyDown(KEY_S))camera.target.y += 10;
         
         mousePosition = GetMousePosition();
         
@@ -105,6 +105,26 @@ int main()
             camera.zoom = 1.0f;
         }
         
+        //Creating Colliders
+        
+        if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON ))
+        {
+            drawingNewCollider = 1;
+            flashRec.x = mousePosition.x;
+            flashRec.y = mousePosition.y;
+        }
+        if(drawingNewCollider)
+        {
+            flashRec.width = mousePosition.x - flashRec.x;
+            flashRec.height = mousePosition.y - flashRec.y;
+        }
+        if(IsMouseButtonReleased(MOUSE_LEFT_BUTTON))
+        {
+            drawingNewCollider = 0;
+        }
+            
+        
+        
         //----------------------------------------------------------------------------------
 
         // Draw
@@ -122,11 +142,16 @@ int main()
                 
                 //Layer 0 Collider
                 
+                if(drawingNewCollider)
+                {
+                    DrawRectangleRec(flashRec,RED);
+                }
+                
                 if(LayerZeroToggle)
                 {
-                    for(int i = 0; i >= ColliderCounter;i++)
+                    for(int i = 0; i <= ColliderCounter;i++)
                     {
-                        DrawRectangleRec(Colliders[i],RED);
+                        DrawRectangleRec(colliders[i],RED);
                     }
                 }
                 
@@ -135,7 +160,8 @@ int main()
             End2dMode();
             
             DrawText(FormatText("Zoom %i", camera.zoom), 0, 0, 20, RED);
-            DrawText(FormatText("Collider %i", LayerZeroToggle), 0, 30, 20, RED);
+            DrawText(FormatText("Colliders %i", ColliderCounter), 0, 30, 20, RED);
+            DrawText(FormatText("Drawing %i",drawingNewCollider ), 0, 50, 20, RED);
             
             if(LayerZeroToggle)DrawRectangleRec(buttonLayerZero,MAROON); //ON
             else DrawRectangleRec(buttonLayerZero,BLACK); //OFF
